@@ -49,6 +49,14 @@ class Model:
             (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
 
     @classmethod
+    async def search(cls, page,  **kwargs):
+        kwargs['is_active'] = True
+        _model = database[cls._model]
+        return _model.find(kwargs).sort(
+            [('created', pymongo.DESCENDING)]).skip(
+            (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
+
+    @classmethod
     async def count(cls):
         _model = database[cls._model]
         return await _model.count_documents({})
