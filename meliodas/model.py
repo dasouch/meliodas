@@ -52,3 +52,8 @@ class Model:
     async def count(cls):
         _model = database[cls._model]
         return await _model.count_documents({})
+
+    @classmethod
+    async def delete(cls, _id):
+        _model = database[cls._model]
+        return await _model.delete_one({'id': _id})
