@@ -42,18 +42,14 @@ class Model:
         return record
 
     @classmethod
-    async def filter(cls, page):
+    async def _search(cls, page=None,  **kwargs):
         _model = database[cls._model]
-        return _model.find({}).sort(
-            [('created', pymongo.DESCENDING)]).skip(
-            (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
-
-    @classmethod
-    async def search(cls, page,  **kwargs):
-        _model = database[cls._model]
+        if page:
+            return _model.find(kwargs).sort(
+                [('created', pymongo.DESCENDING)]).skip(
+                (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
         return _model.find(kwargs).sort(
-            [('created', pymongo.DESCENDING)]).skip(
-            (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
+            [('created', pymongo.DESCENDING)])
 
     @classmethod
     async def count(cls):
@@ -64,3 +60,33 @@ class Model:
     async def delete(cls, _id):
         _model = database[cls._model]
         return await _model.delete_one({'id': _id})
+
+    @classmethod
+    async def _filter(cls, page):
+        _model = database[cls._model]
+        return _model.find({}).sort(
+            [('created', pymongo.DESCENDING)]).skip(
+            (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
+
+    @classmethod
+    async def filter(cls, page):
+        certificates = []
+        records = await cls._filter(page=page)
+        async for record in records:
+            certificates.append(cls(**record).to_dict())
+        return certificates
+
+    @classmethod
+    async def search(cls, page=None, **kwargs):
+        certificates = []
+        records = await cls._search(page=page, **kwargs)
+        async for record in records:
+            certificates.append(cls(**record).to_dict())
+        return certificates
+
+    def to_dict(self):
+        data = {}
+        for attribute, value in self.__dict__.items():
+            if attribute.startswith('_'):
+                data[attribute[1:]] = value
+        return data

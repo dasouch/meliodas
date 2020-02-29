@@ -1,9 +1,10 @@
 from pytest import fixture
 
-from meliodas import settings
+from meliodas.model import client
+from meliodas.settings import DB_NAME
 
 
-@fixture(autouse=True, scope='session')
-def setup_test_database():
-    settings.DB_NAME = settings.DB_NAME + '_test'
+@fixture(autouse=True, scope='function')
+async def drop_test_database():
+    await client.drop_database(DB_NAME)
     yield
