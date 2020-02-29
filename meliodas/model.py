@@ -50,7 +50,6 @@ class Model:
 
     @classmethod
     async def search(cls, page,  **kwargs):
-        kwargs['is_active'] = True
         _model = database[cls._model]
         return _model.find(kwargs).sort(
             [('created', pymongo.DESCENDING)]).skip(
