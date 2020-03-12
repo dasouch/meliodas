@@ -70,23 +70,27 @@ class Model:
 
     @classmethod
     async def filter(cls, page):
-        certificates = []
+        rows = []
         records = await cls._filter(page=page)
         async for record in records:
-            certificates.append(cls(**record).to_dict())
-        return certificates
+            rows.append(cls(**record).to_dict())
+        return rows
 
     @classmethod
     async def search(cls, page=None, **kwargs):
-        certificates = []
+        rows = []
         records = await cls._search(page=page, **kwargs)
         async for record in records:
-            certificates.append(cls(**record).to_dict())
-        return certificates
+            rows.append(cls(**record).to_dict())
+        return rows
 
     def to_dict(self):
         data = {}
         for attribute, value in self.__dict__.items():
             if attribute.startswith('_'):
-                data[attribute[1:]] = value
+                field = attribute[1:]
+                try:
+                    data[field] = getattr(self, field)
+                except AttributeError:
+                    data[attribute[1:]] = value
         return data

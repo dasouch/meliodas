@@ -11,6 +11,7 @@ class TestModel(Model):
         self._first_name = kwargs.get('first_name', '')
         self._last_name = kwargs.get('last_name', '')
         self._age = kwargs.get('age', '')
+        self._address = kwargs.get('address', '')
 
     @property
     def id(self):
@@ -49,7 +50,7 @@ async def test_create_model_error(event_loop):
 
 @mark.asyncio
 async def test_filter_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
+    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 11')
     assert test_model.first_name is 'Danilo'
     assert test_model.last_name is 'Vargas'
     assert test_model.age is 25
@@ -59,6 +60,7 @@ async def test_filter_model_success(event_loop):
     assert records[0]['first_name'] == 'Danilo'
     assert records[0]['last_name'] == 'Vargas'
     assert records[0]['age'] == 25
+    assert records[0]['address'] == 'Cra 11'
 
 
 @mark.asyncio
@@ -90,7 +92,7 @@ async def test_update_model_success(event_loop):
 
 @mark.asyncio
 async def test_search_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
+    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 12')
     records = await TestModel.search(age=25)
     assert records[0]['id'] == test_model.id
     assert records[0]['first_name'] == test_model.first_name
@@ -101,6 +103,7 @@ async def test_search_model_success(event_loop):
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
+    assert records[0]['address'] == 'Cra 12'
 
 
 @mark.asyncio
