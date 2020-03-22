@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from pytest import mark
 
 from meliodas.model import Model
 
 
-class TestModel(Model):
+class ModelTest(Model):
     _model = 'test'
 
     def __init__(self, **kwargs):
@@ -12,6 +14,7 @@ class TestModel(Model):
         self._last_name = kwargs.get('last_name', '')
         self._age = kwargs.get('age', '')
         self._address = kwargs.get('address', '')
+        self._created = kwargs.get('created', '')
 
     @property
     def id(self):
@@ -29,33 +32,39 @@ class TestModel(Model):
     def age(self):
         return self._age
 
+    @property
+    def created(self):
+        return self._created
+
 
 @mark.asyncio
 async def test_create_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
     assert test_model.first_name is 'Danilo'
     assert test_model.last_name is 'Vargas'
     assert test_model.age is 25
-    assert type(test_model) is TestModel
+    created = datetime.fromisoformat(str(test_model.created))
+    assert type(created) is datetime
+    assert type(test_model) is ModelTest
 
 
 @mark.asyncio
 async def test_create_model_error(event_loop):
-    test_model = await TestModel.create()
+    test_model = await ModelTest.create()
     assert test_model.first_name is ''
     assert test_model.last_name is ''
     assert test_model.age is ''
-    assert type(test_model) is TestModel
+    assert type(test_model) is ModelTest
 
 
 @mark.asyncio
 async def test_filter_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 11')
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 11')
     assert test_model.first_name is 'Danilo'
     assert test_model.last_name is 'Vargas'
     assert test_model.age is 25
-    assert type(test_model) is TestModel
-    records = await TestModel.filter(page=1)
+    assert type(test_model) is ModelTest
+    records = await ModelTest.filter(page=1)
     assert len(records) == 1
     assert records[0]['first_name'] == 'Danilo'
     assert records[0]['last_name'] == 'Vargas'
@@ -65,8 +74,8 @@ async def test_filter_model_success(event_loop):
 
 @mark.asyncio
 async def test_get_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
-    record = await TestModel.get_or_none(id=test_model.id)
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
+    record = await ModelTest.get_or_none(id=test_model.id)
     assert record.id == test_model.id
     assert record.first_name == 'Danilo'
     assert record.last_name == 'Vargas'
@@ -75,15 +84,15 @@ async def test_get_model_success(event_loop):
 
 @mark.asyncio
 async def test_get_model_fail(event_loop):
-    record = await TestModel.get_or_none(id='12345')
+    record = await ModelTest.get_or_none(id='12345')
     assert record is None
 
 
 @mark.asyncio
 async def test_update_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
-    record = await TestModel.update(_id=test_model.id, first_name='Carlos', last_name='Caviedes', age=26)
-    record = await TestModel.get_or_none(id=record.id)
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
+    record = await ModelTest.update(_id=test_model.id, first_name='Carlos', last_name='Caviedes', age=26)
+    record = await ModelTest.get_or_none(id=record.id)
     assert record.id == test_model.id
     assert record.first_name == 'Carlos'
     assert record.last_name == 'Caviedes'
@@ -92,13 +101,13 @@ async def test_update_model_success(event_loop):
 
 @mark.asyncio
 async def test_search_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 12')
-    records = await TestModel.search(age=25)
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 12')
+    records = await ModelTest.search(age=25)
     assert records[0]['id'] == test_model.id
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
-    records = await TestModel.search(page=1, age=25)
+    records = await ModelTest.search(page=1, age=25)
     assert records[0]['id'] == test_model.id
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
@@ -108,14 +117,14 @@ async def test_search_model_success(event_loop):
 
 @mark.asyncio
 async def test_count_model_success(event_loop):
-    await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
-    count = await TestModel.count()
+    await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
+    count = await ModelTest.count()
     assert count == 1
 
 
 @mark.asyncio
 async def test_delete_model_success(event_loop):
-    test_model = await TestModel.create(first_name='Danilo', last_name='Vargas', age=25)
-    await TestModel.delete(_id=test_model.id)
-    test_model = await TestModel.get_or_none(_id=test_model.id)
+    test_model = await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
+    await ModelTest.delete(_id=test_model.id)
+    test_model = await ModelTest.get_or_none(_id=test_model.id)
     assert test_model is None

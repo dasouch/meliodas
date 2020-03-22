@@ -90,7 +90,11 @@ class Model:
             if attribute.startswith('_'):
                 field = attribute[1:]
                 try:
-                    data[field] = getattr(self, field)
+                    value = getattr(self, field)
+                    if type(value) == datetime:
+                        data[field] = value.isoformat()
+                    else:
+                        data[field] = value
                 except AttributeError:
                     data[attribute[1:]] = value
         return data
