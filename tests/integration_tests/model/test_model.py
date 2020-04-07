@@ -128,3 +128,14 @@ async def test_delete_model_success(event_loop):
     await ModelTest.delete(_id=test_model.id)
     test_model = await ModelTest.get_or_none(_id=test_model.id)
     assert test_model is None
+
+
+@mark.asyncio
+async def test_last_model_success(event_loop):
+    await ModelTest.create(first_name='Danilo', last_name='Vargas', age=25)
+    await ModelTest.create(first_name='Tech', last_name='Colombia', age=28)
+    await ModelTest.create(first_name='Carlos', last_name='Vargas', age=26)
+    model = await ModelTest.last()
+    assert model.first_name == 'Carlos'
+    assert model.last_name == 'Vargas'
+    assert model.age == 26

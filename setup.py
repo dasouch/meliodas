@@ -16,7 +16,7 @@ test_require = [
 
 setup(
     name='meliodas',
-    version='1.0.6',
+    version='1.0.7',
     packages=['meliodas'],
     install_requires=install_requires,
     author='Danilo Vargas',

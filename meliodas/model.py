@@ -52,6 +52,13 @@ class Model:
             [('created', pymongo.DESCENDING)])
 
     @classmethod
+    async def last(cls):
+        _model = database[cls._model]
+        records = _model.find({}).sort([('_id', pymongo.DESCENDING)]).limit(1)
+        async for record in records:
+            return cls(**record)
+
+    @classmethod
     async def count(cls):
         _model = database[cls._model]
         return await _model.count_documents({})
