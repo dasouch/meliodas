@@ -139,3 +139,11 @@ async def test_last_model_success(event_loop):
     assert model.first_name == 'Carlos'
     assert model.last_name == 'Vargas'
     assert model.age == 26
+
+
+@mark.asyncio
+async def test_last_model_empty_success(event_loop):
+    model = await ModelTest.last()
+    assert model.first_name == ''
+    assert model.last_name == ''
+    assert model.age == ''

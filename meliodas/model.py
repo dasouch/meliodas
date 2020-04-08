@@ -57,6 +57,7 @@ class Model:
         records = _model.find({}).sort([('_id', pymongo.DESCENDING)]).limit(1)
         async for record in records:
             return cls(**record)
+        return cls()
 
     @classmethod
     async def count(cls):
