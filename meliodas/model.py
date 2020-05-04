@@ -15,7 +15,7 @@ database = client[DB_NAME]
 class Model:
     _fields = []
     perPage = 10
-    sort = []
+    sort = [('created', pymongo.DESCENDING)]
     _model = None
 
     @classmethod
@@ -45,11 +45,9 @@ class Model:
     async def _search(cls, page=None,  **kwargs):
         _model = database[cls._model]
         if page:
-            return _model.find(kwargs).sort(
-                [('created', pymongo.DESCENDING)]).skip(
+            return _model.find(kwargs).sort(cls.sort).skip(
                 (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
-        return _model.find(kwargs).sort(
-            [('created', pymongo.DESCENDING)])
+        return _model.find(kwargs).sort(cls.sort)
 
     @classmethod
     async def last(cls):
@@ -72,8 +70,7 @@ class Model:
     @classmethod
     async def _filter(cls, page):
         _model = database[cls._model]
-        return _model.find({}).sort(
-            [('created', pymongo.DESCENDING)]).skip(
+        return _model.find({}).sort(cls.sort).skip(
             (cls.perPage * int(page)) - cls.perPage).limit(cls.perPage)
 
     @classmethod

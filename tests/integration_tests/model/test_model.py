@@ -1,5 +1,7 @@
+import asyncio
 from datetime import datetime
 
+import pymongo
 from pytest import mark
 
 from meliodas.model import Model
@@ -7,6 +9,7 @@ from meliodas.model import Model
 
 class ModelTest(Model):
     _model = 'test'
+    sort = [('age', pymongo.ASCENDING)]
 
     def __init__(self, **kwargs):
         self._id = kwargs.get('id', '')
@@ -147,3 +150,16 @@ async def test_last_model_empty_success(event_loop):
     assert model.first_name == ''
     assert model.last_name == ''
     assert model.age == ''
+
+
+@mark.asyncio
+async def test_ordering_model_success(event_loop):
+    await asyncio.gather(
+        ModelTest.create(first_name='Danilo', last_name='Vargas', age=25, address='Cra 25'),
+        ModelTest.create(first_name='Danilo', last_name='Vargas', age=10, address='Cra 10'),
+        ModelTest.create(first_name='Danilo', last_name='Vargas', age=20, address='Cra 20')
+    )
+    records = await ModelTest.filter(page=1)
+    assert records[0]['age'] == 10
+    assert records[1]['age'] == 20
+    assert records[2]['age'] == 25
