@@ -2,21 +2,21 @@ from setuptools import setup
 
 
 install_requires = [
-    'motor==2.1.0',
-    'pymongo==3.10.1'
+    'motor==2.5.0',
+    'pymongo==3.12.0'
 ]
 
 
 test_require = [
-    'pytest==5.3.5',
-    'pytest-asyncio==0.10.0',
-    'ipython==7.12.0'
-
+    'ipython==7.26.0',
+    'pytest==6.2.4',
+    'pytest-asyncio==0.15.1',
+    'pytest-cov==2.12.1'
 ]
 
 setup(
     name='meliodas',
-    version='1.0.9',
+    version='1.1.0',
     packages=['meliodas'],
     install_requires=install_requires,
     author='Danilo Vargas',
