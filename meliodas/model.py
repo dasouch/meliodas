@@ -3,9 +3,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 from uuid import uuid4
 
-from .settings import DB_NAME, DB_PORT, DB_HOST, DB_USER, DB_PASSWORD
+from .settings import DB_NAME, DB_PORT, DB_HOST, DB_USER, DB_PASSWORD, DB_SSL, DB_CA_CERTS
 
-if DB_USER and DB_PASSWORD:
+if DB_USER and DB_PASSWORD and DB_SSL:
+    client = AsyncIOMotorClient(f'mongodb://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/?ssl=true&ssl_ca_certs={DB_CA_CERTS}&retryWrites=false')
+elif DB_USER and DB_PASSWORD:
     client = AsyncIOMotorClient(f'mongodb://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}')
 else:
     client = AsyncIOMotorClient(f'mongodb://{DB_HOST}:{DB_PORT}')
