@@ -1,3 +1,5 @@
+import asyncio
+
 import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
@@ -11,6 +13,7 @@ elif DB_USER and DB_PASSWORD:
     client = AsyncIOMotorClient(f'mongodb://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}')
 else:
     client = AsyncIOMotorClient(f'mongodb://{DB_HOST}:{DB_PORT}')
+client.get_io_loop = asyncio.get_event_loop
 
 
 class Model:
