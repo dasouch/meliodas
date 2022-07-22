@@ -1,19 +1,9 @@
-import asyncio
-
 import pymongo
-from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 from uuid import uuid4
 
-from .settings import DB_NAME, DB_PORT, DB_HOST, DB_USER, DB_PASSWORD, DB_SSL, DB_CA_CERTS
-
-if DB_USER and DB_PASSWORD and DB_SSL:
-    client = AsyncIOMotorClient(f'mongodb://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/?ssl=true&ssl_ca_certs={DB_CA_CERTS}&retryWrites=false')
-elif DB_USER and DB_PASSWORD:
-    client = AsyncIOMotorClient(f'mongodb://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}')
-else:
-    client = AsyncIOMotorClient(f'mongodb://{DB_HOST}:{DB_PORT}')
-client.get_io_loop = asyncio.get_event_loop
+from .connection import Connection
+from .settings import DB_NAME
 
 
 class Model:
@@ -28,7 +18,7 @@ class Model:
 
     def _get_model(self, db_name):
         self.set_database_name(name=db_name)
-        return client[self.database_name][self._model]
+        return Connection().client[self.database_name][self._model]
 
     @classmethod
     async def create(cls, db_name=DB_NAME, **kwargs):
