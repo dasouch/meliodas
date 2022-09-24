@@ -29,7 +29,7 @@ class Model:
         return obj
 
     async def save(self, db_name):
-        await self._get_model(db_name=db_name).insert_one(self.to_dict())
+        await self._get_model(db_name=db_name).insert_one(self._to_dict())
 
     @classmethod
     async def get_or_none(cls, db_name=DB_NAME, **kwargs):
@@ -100,7 +100,7 @@ class Model:
             rows.append(cls(**record).to_dict())
         return rows
 
-    def to_dict(self):
+    def _to_dict(self):
         data = {}
         for attribute, value in self.__dict__.items():
             if attribute.startswith('_'):
@@ -114,3 +114,6 @@ class Model:
                 except AttributeError:
                     data[attribute[1:]] = value
         return data
+
+    def to_dict(self):
+        return self._to_dict()
