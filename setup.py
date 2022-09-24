@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 install_requires = [
-    'motor==3.1.0',
+    'motor==3.0.0',
     'pymongo==4.2.0'
 ]
 
@@ -16,7 +16,7 @@ test_require = [
 
 setup(
     name='meliodas',
-    version='1.1.6',
+    version='1.1.7',
     packages=['meliodas'],
     install_requires=install_requires,
     author='Danilo Vargas',
