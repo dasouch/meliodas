@@ -46,8 +46,7 @@ async def test_create_model_success(event_loop):
     assert test_model.first_name is 'Danilo'
     assert test_model.last_name is 'Vargas'
     assert test_model.age is 25
-    created = datetime.fromisoformat(str(test_model.created))
-    assert type(created) is datetime
+    assert type(test_model.created) is datetime
     assert type(test_model) is ModelTest
     record = await ModelTest.get_or_none(id=test_model.id)
     assert record.id == test_model.id
@@ -56,12 +55,12 @@ async def test_create_model_success(event_loop):
     assert test_model.first_name is 'Tech'
     assert test_model.last_name is 'Meliodas'
     assert test_model.age is 18
-    created = datetime.fromisoformat(str(test_model.created))
-    assert type(created) is datetime
+    assert type(test_model.created) is datetime
     assert type(test_model) is ModelTest
     record = await ModelTest.get_or_none(db_name='meliodas', id=test_model.id)
     assert record.id == test_model.id
     assert record.first_name == test_model.first_name
+    assert type(record.created) is datetime
 
 
 @mark.asyncio
@@ -115,6 +114,7 @@ async def test_get_model_success(event_loop):
     assert record.first_name == 'Tech'
     assert record.last_name == 'Meliodas'
     assert record.age == 18
+    assert type(record.created) is datetime
 
 
 @mark.asyncio
@@ -152,12 +152,14 @@ async def test_search_model_success(event_loop):
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
+    assert type(records[0]['created']) is str
     records = await ModelTest.search(page=1, age=25)
     assert records[0]['id'] == test_model.id
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
     assert records[0]['address'] == 'Cra 12'
+    assert type(records[0]['created']) is str
     records = await ModelTest.search(page=1, db_name='meliodas', age=25)
     assert records == []
     test_model = await ModelTest.create(db_name='meliodas', first_name='Tech', last_name='Meliodas', age=18,
@@ -167,12 +169,14 @@ async def test_search_model_success(event_loop):
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
+    assert type(records[0]['created']) is str
     records = await ModelTest.search(page=1, age=18, db_name='meliodas')
     assert records[0]['id'] == test_model.id
     assert records[0]['first_name'] == test_model.first_name
     assert records[0]['last_name'] == test_model.last_name
     assert records[0]['age'] == test_model.age
     assert records[0]['address'] == 'Cra 10'
+    assert type(records[0]['created']) is str
 
 
 @mark.asyncio

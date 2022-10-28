@@ -1,9 +1,18 @@
+import json
+from json import JSONEncoder
+
 import pymongo
-from datetime import datetime
+from datetime import datetime, date
 from uuid import uuid4
 
 from .connection import Connection
 from .settings import DB_NAME
+
+
+class DateTimeEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
 
 
 class Model:
@@ -106,14 +115,10 @@ class Model:
             if attribute.startswith('_'):
                 field = attribute[1:]
                 try:
-                    value = getattr(self, field)
-                    if type(value) == datetime:
-                        data[field] = value.isoformat()
-                    else:
-                        data[field] = value
+                    data[field] = getattr(self, field)
                 except AttributeError:
                     data[attribute[1:]] = value
         return data
 
     def to_dict(self):
-        return self._to_dict()
+        return json.loads(json.dumps(self._to_dict(), cls=DateTimeEncoder))
