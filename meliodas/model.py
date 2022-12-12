@@ -53,8 +53,6 @@ class Model:
         obj = cls()
         _model = obj._get_model(db_name=db_name)
         await _model.update_one({'id': _id}, {'$set': kwargs})
-        record = await cls.get_or_none(id=_id, db_name=db_name)
-        return record
 
     @classmethod
     async def _search(cls, page=None, db_name=DB_NAME, **kwargs):
