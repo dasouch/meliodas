@@ -19,6 +19,7 @@ class Model:
     _fields = []
     perPage = 10
     sort = [('created', pymongo.DESCENDING)]
+    sort_last = [('_id', pymongo.DESCENDING)]
     _model = None
     database_name = DB_NAME
 
@@ -67,7 +68,7 @@ class Model:
     async def last(cls, db_name=DB_NAME):
         obj = cls()
         _model = obj._get_model(db_name=db_name)
-        records = _model.find({}).sort([('_id', pymongo.DESCENDING)]).limit(1)
+        records = _model.find({}).sort(cls.sort_last).limit(1)
         async for record in records:
             return cls(**record)
         return cls()
