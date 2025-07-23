@@ -74,10 +74,10 @@ class Model:
         return cls()
 
     @classmethod
-    async def count(cls, db_name=DB_NAME):
+    async def count(cls, db_name=DB_NAME, **kwargs):
         obj = cls()
         _model = obj._get_model(db_name=db_name)
-        return await _model.count_documents({})
+        return await _model.count_documents(kwargs)
 
     @classmethod
     async def delete(cls, _id, db_name=DB_NAME):
