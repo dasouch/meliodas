@@ -4,7 +4,7 @@ from setuptools import setup
 install_requires = [
     'motor==3.0.0',
     'pymongo==4.2.0',
-    'cryptography==45.0.5'
+    'cryptography==41.0.5'
 ]
 
 
